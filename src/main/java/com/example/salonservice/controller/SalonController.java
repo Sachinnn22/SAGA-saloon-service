@@ -36,4 +36,18 @@ public class SalonController {
         SalonResponseDto salon = salonService.getSalonById(id);
         return ResponseEntity.ok(ApiResponse.success("Salon fetched successfully", salon));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<SalonResponseDto>> updateSalon(
+            @PathVariable Long id, 
+            @RequestBody SalonRequestDto requestDto) {
+        SalonResponseDto updatedSalon = salonService.updateSalon(id, requestDto);
+        return ResponseEntity.ok(ApiResponse.success("Salon updated successfully", updatedSalon));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteSalon(@PathVariable Long id) {
+        salonService.deleteSalon(id);
+        return ResponseEntity.ok(ApiResponse.success("Salon deleted successfully", null));
+    }
 }

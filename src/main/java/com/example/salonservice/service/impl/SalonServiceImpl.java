@@ -45,6 +45,29 @@ public class SalonServiceImpl implements SalonService {
         return mapToDto(salon);
     }
 
+    @Override
+    public SalonResponseDto updateSalon(Long id, SalonRequestDto requestDto) {
+        Salon existingSalon = salonRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Salon not found with id: " + id));
+
+        existingSalon.setName(requestDto.getName());
+        existingSalon.setAddress(requestDto.getAddress());
+        existingSalon.setPhone(requestDto.getPhone());
+        existingSalon.setDescription(requestDto.getDescription());
+        existingSalon.setOwnerEmail(requestDto.getOwnerEmail());
+
+        Salon updatedSalon = salonRepository.save(existingSalon);
+        return mapToDto(updatedSalon);
+    }
+
+    @Override
+    public void deleteSalon(Long id) {
+        if (!salonRepository.existsById(id)) {
+            throw new RuntimeException("Salon not found with id: " + id);
+        }
+        salonRepository.deleteById(id);
+    }
+
     private SalonResponseDto mapToDto(Salon salon) {
         return SalonResponseDto.builder()
                 .id(salon.getId())

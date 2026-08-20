@@ -1,13 +1,21 @@
 server:
-  port: 8082
+  port: 8002
+  forward-headers-strategy: framework
 
 spring:
   application:
     name: salon-service
+
+  mvc:
+    problemdetails:
+      enabled: true
+
   datasource:
     url: jdbc:postgresql://localhost:5432/salon_db
     username: postgres
     password: sachi17953
+    driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -15,10 +23,15 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+file:
+  upload-dir: ${user.home}/.ijse/eca/salon/uploads
 
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+
   instance:
     prefer-ip-address: true
