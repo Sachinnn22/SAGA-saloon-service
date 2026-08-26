@@ -6,7 +6,7 @@ spring:
     name: salon-service
 
   config:
-    import: "optional:configserver:http://config.platform:8888"
+    import: "optional:configserver:http://localhost:8888"
 
   cloud:
     gcp:
