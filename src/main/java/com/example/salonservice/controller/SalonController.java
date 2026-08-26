@@ -6,6 +6,7 @@ import com.example.salonservice.dto.SalonResponseDto;
 import com.example.salonservice.service.SalonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType; 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +19,9 @@ public class SalonController {
 
     private final SalonService salonService;
 
-    @PostMapping("/register")
-    public ResponseEntity<ApiResponse<SalonResponseDto>> registerSalon(@RequestBody SalonRequestDto requestDto) {
+    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<SalonResponseDto>> registerSalon(
+            @ModelAttribute SalonRequestDto requestDto) {
         SalonResponseDto responseDto = salonService.registerSalon(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success("Salon registered successfully", responseDto));
@@ -37,10 +39,10 @@ public class SalonController {
         return ResponseEntity.ok(ApiResponse.success("Salon fetched successfully", salon));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<SalonResponseDto>> updateSalon(
             @PathVariable Long id, 
-            @RequestBody SalonRequestDto requestDto) {
+            @ModelAttribute SalonRequestDto requestDto) { 
         SalonResponseDto updatedSalon = salonService.updateSalon(id, requestDto);
         return ResponseEntity.ok(ApiResponse.success("Salon updated successfully", updatedSalon));
     }

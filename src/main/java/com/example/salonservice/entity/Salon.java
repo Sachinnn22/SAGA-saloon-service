@@ -23,4 +23,5 @@ public class Salon {
     private String phone;
     private String description;
     private String ownerEmail; 
+    private String imageUrl;
 }

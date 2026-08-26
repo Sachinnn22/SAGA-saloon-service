@@ -16,4 +16,5 @@ public class SalonResponseDto {
     private String phone;
     private String description;
     private String ownerEmail;
+    private String imageUrl;
 }

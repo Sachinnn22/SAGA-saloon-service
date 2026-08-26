@@ -7,3 +7,13 @@ spring:
 
   config:
     import: "optional:configserver:http://localhost:8888"
+
+  cloud:
+    gcp:
+      credentials:
+        location: classpath:gcp-key.json
+      project-id: directed-post-506508-i4
+
+gcp:
+  storage:
+    bucket.name: salon-bucket1

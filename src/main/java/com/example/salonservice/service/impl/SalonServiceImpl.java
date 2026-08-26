@@ -4,10 +4,12 @@ import com.example.salonservice.dto.SalonRequestDto;
 import com.example.salonservice.dto.SalonResponseDto;
 import com.example.salonservice.entity.Salon;
 import com.example.salonservice.repository.SalonRepository;
+import com.example.salonservice.config.GcpStorageService; 
 import com.example.salonservice.service.SalonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,15 +18,26 @@ import java.util.stream.Collectors;
 public class SalonServiceImpl implements SalonService {
 
     private final SalonRepository salonRepository;
+    private final GcpStorageService gcpStorageService; 
 
     @Override
     public SalonResponseDto registerSalon(SalonRequestDto requestDto) {
+        String imageUrl = null;
+        try {
+            if (requestDto.getImage() != null && !requestDto.getImage().isEmpty()) {
+                imageUrl = gcpStorageService.uploadFile(requestDto.getImage()); 
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload image to GCP", e);
+        }
+
         Salon salon = Salon.builder()
                 .name(requestDto.getName())
                 .address(requestDto.getAddress())
                 .phone(requestDto.getPhone())
                 .description(requestDto.getDescription())
                 .ownerEmail(requestDto.getOwnerEmail())
+                .imageUrl(imageUrl) 
                 .build();
 
         Salon savedSalon = salonRepository.save(salon);
@@ -56,6 +69,15 @@ public class SalonServiceImpl implements SalonService {
         existingSalon.setDescription(requestDto.getDescription());
         existingSalon.setOwnerEmail(requestDto.getOwnerEmail());
 
+        try {
+            if (requestDto.getImage() != null && !requestDto.getImage().isEmpty()) {
+                String imageUrl = gcpStorageService.uploadFile(requestDto.getImage());
+                existingSalon.setImageUrl(imageUrl);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to update image", e);
+        }
+
         Salon updatedSalon = salonRepository.save(existingSalon);
         return mapToDto(updatedSalon);
     }
@@ -76,6 +98,7 @@ public class SalonServiceImpl implements SalonService {
                 .phone(salon.getPhone())
                 .description(salon.getDescription())
                 .ownerEmail(salon.getOwnerEmail())
+                .imageUrl(salon.getImageUrl()) 
                 .build();
     }
 }
