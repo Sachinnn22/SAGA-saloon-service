@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.5</version>
+        <version>4.1.0</version>
         <relativePath/>
     </parent>
 
@@ -17,8 +17,9 @@
     <description>Salon Service</description>
 
     <properties>
-        <java.version>17</java.version>
-        <spring-cloud.version>2023.0.3</spring-cloud.version>
+        <java.version>25</java.version>
+        <spring-cloud.version>2025.1.2</spring-cloud.version>
+        <lombok.version>1.18.38</lombok.version>
     </properties>
 
     <dependencies>
@@ -42,10 +43,11 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
+        <!-- Google Cloud Storage Dependency -->
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>spring-cloud-gcp-starter-storage</artifactId>
-            <version>5.0.0</version>
+            <version>6.0.0</version>
         </dependency>
 
         <dependency>
@@ -60,17 +62,15 @@
         </dependency>
 
         <dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-config</artifactId>
-</dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-
-       
     </dependencies>
 
     <dependencyManagement>
@@ -90,6 +90,21 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- Java 25 සහ Lombok සඳහා Compiler Plugin එක -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
             </plugin>
         </plugins>
     </build>
