@@ -1,6 +1,5 @@
 package com.example.salonservice.config;
 
-import com.google.cloud.storage.Acl; 
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
@@ -10,8 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.UUID;
 
 @Service
@@ -24,16 +21,41 @@ public class GcpStorageService {
     private String bucketName;
 
     public String uploadFile(MultipartFile file) throws IOException {
-        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
 
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("File cannot be empty");
+        }
+
+        String originalFileName = file.getOriginalFilename();
+
+        if (originalFileName == null || originalFileName.isBlank()) {
+            originalFileName = "file";
+        }
+
+        // Generate unique filename
+        String fileName = UUID.randomUUID() + "_" + originalFileName;
+
+        // Create Blob ID
         BlobId blobId = BlobId.of(bucketName, fileName);
+
+        // Create Blob information
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
-                .setContentType(file.getContentType())
-                .setAcl(new ArrayList<>(Arrays.asList(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER))))
+                .setContentType(
+                        file.getContentType() != null
+                                ? file.getContentType()
+                                : "application/octet-stream"
+                )
                 .build();
 
+        // Upload file to Google Cloud Storage
         storage.create(blobInfo, file.getBytes());
 
-        return String.format("https://storage.googleapis.com/%s/%s", bucketName, fileName);
+        // Return public/storage URL
+        return String.format(
+                "https://storage.googleapis.com/%s/%s",
+                bucketName,
+                fileName
+        );
     }
 }
+
