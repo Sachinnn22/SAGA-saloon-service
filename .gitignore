@@ -34,5 +34,5 @@ build/
 
 # Google Cloud credentials
 src/main/resources/gcp-key.json
-src/main/resources/gcp-key.json.json
+src/main/resources/gcp-key.json
 gcp-key.json
